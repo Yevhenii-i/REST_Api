@@ -29,7 +29,7 @@ def get_books():
 @main.route('/books/<string:id>', methods=['GET'])
 def get_book(id):
     book = get_book_by_id(id)
-    if book is None:
+    if not book:
         return abort(404)
     return make_response({"book": book})
 
@@ -39,7 +39,6 @@ def create_book():
     try:
         book_schema = BookSchema()
         book = book_schema.load(data)
-        #book = book_schema.dump(book) зайві зміни
     except ValidationError as err:
         return make_response({"error": err.messages}, 422)
     books.append(book)
@@ -48,7 +47,7 @@ def create_book():
 @main.route('/books/<string:id>', methods=['DELETE'])
 def delete_book(id: str):
     book = get_book_by_id(id)
-    if book is None:
+    if not book:
         return abort(404)
     books.remove(book)
     return make_response({}, 204)
